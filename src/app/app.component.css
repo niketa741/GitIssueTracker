@@ -1,0 +1,13 @@
+.flex{
+    flex: 1 1 auto;
+}
+.full-width{
+    width: 100%;
+}
+form{
+    width: 100%;
+}
+
+table {
+    width: 100%;
+  }
