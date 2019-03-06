@@ -1,4 +1,4 @@
-# Gitrepoapp
+# GitIssueTrackerApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.3.
 Gitrepoapp is a simple app which tracks opened issues from a given repository. It takes input as
