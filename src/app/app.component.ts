@@ -67,7 +67,7 @@ export class AppComponent {
     this.gitService.fetchTotalIssues(username,repository)
     .subscribe(
       issues => {
-        this.result[0].total = issues.total_count;
+        this.result[0].total = issues["total_count"];
         console.log(this.result);
       },
       (error: Response) => {
@@ -83,10 +83,10 @@ export class AppComponent {
       result => {
         let diff = this.diffFromCurrent(date);
         switch(true) {
-        case (diff <=1) : this.result[0].last24 = result.total_count;
+        case (diff <=1) : this.result[0].last24 = result["total_count"];
         console.log(this.result);
         break;
-        case (diff <= 7) : this.result[0].last7 = result.total_count;
+        case (diff <= 7) : this.result[0].last7 = result["total_count"];
         // this.result[0].morethan7 = this.result[0].total - this.result[0].last7;
         console.log(this.result);
         }
