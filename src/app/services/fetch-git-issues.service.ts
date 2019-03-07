@@ -12,8 +12,13 @@ export class FetchGitIssuesService {
   private url;
   constructor(private http: HttpClient) { }
 
-  fetchissue(username,repo_name){
-    this.url = `https://api.github.com/repos/${username}/${repo_name}/issues`;
+  fetchTotalIssues(username,repo_name){
+    this.url = `https://api.github.com/search/issues?q=repo:${username}/${repo_name}+type:issue+state:open`;
+    return this.http.get(this.url)
+    .pipe(catchError(this.handleError));
+  }
+  fetchIssuesByDate(username,repo_name,date) {
+    this.url = `https://api.github.com/search/issues?q=repo:${username}/${repo_name}+type:issue+state:open++created:<${date}`;
     return this.http.get(this.url)
     .pipe(catchError(this.handleError));
   }

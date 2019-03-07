@@ -3,6 +3,7 @@ import { FetchGitIssuesService } from './services/fetch-git-issues.service';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { CompileShallowModuleMetadata } from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,7 @@ export class AppComponent {
   constructor(private gitService: FetchGitIssuesService, private datePipe: DatePipe){}
 
   submit(){
-    // console.log(this.form.get('repolink').value);
+    console.log(this.form.get('repolink').value);
     this.validateLink(this.form.get('repolink').value);
   }
 
@@ -39,21 +40,36 @@ export class AppComponent {
     let arr = repolink.split('/');
     let username = arr[0];
     let repository = arr[1]
+
     if(!username || !repository){
       console.log("Error in link");
     }else{
-      this.fetchIssueDetails(username,repository);
+      this.RefreshResult();
+      this.fetchTotalIssue(username,repository);
+      this.fetchIssueDetails(username,repository,this.fetchDate("LAST24"));
+      this.fetchIssueDetails(username,repository,this.fetchDate("LAST7"));
+
     }
-    // console.log(`Username - ${username}, repository - ${repository}`);
   }
 
-  fetchIssueDetails(username,repo_name){
-    this.gitService.fetchissue(username,repo_name)
+  fetchDate(date : string){
+    var curr_date = new Date(Date.now());
+    switch(date) {
+      case "LAST24": 
+      return new Date( curr_date.getTime() - (1 * 24 * 60 * 60 * 1000) ).toISOString().slice(0,19)+"Z";
+      
+      case "LAST7" : 
+      return new Date( curr_date.getTime() - (7 * 24 * 60 * 60 * 1000) ).toISOString().slice(0,19)+"Z";
+    }
+
+  }
+
+  fetchTotalIssue(username,repository){
+    this.gitService.fetchTotalIssues(username,repository)
     .subscribe(
       issues => {
-        this.issues = issues;
-        this.daysPassedBy(this.issues);
-        console.log("Values Calculated");
+        this.result[0].total = issues.total_count;
+        console.log(this.result);
       },
       (error: Response) => {
         if((error instanceof AppError) || (error instanceof NotFoundError)){
@@ -62,25 +78,27 @@ export class AppComponent {
       }
     )
   }
+  fetchIssueDetails(username,repository,date) {
+    this.gitService.fetchIssuesByDate(username,repository,date)
+    .subscribe(
+      result => {
+        let diff = this.diffFromCurrent(date);
+        switch(true) {
+        case (diff <1) : this.result[0].last24 = result.total_count;
+        console.log(this.result);
+        break;
+        case (diff < 7) : this.result[0].last7 = result.total_count;
+        this.result[0].morethan7 = this.result[0].total - this.result[0].last7;
+        console.log(this.result);
 
-  daysPassedBy(issues: any[]){
-    this.RefreshResult();
-    this.result[0].total = issues.length;
-    issues.forEach(issue => {
-      let diff = this.diffFromCurrent(issue.created_at);
-      // console.log("diff - "+diff+" days");
-      // console.log("created at -"+issue.created_at);
-      switch(true){
-        case (diff<1): this.result[0].last24++;
-        break;
-        case (diff<7): this.result[0].last7++;
-        break;
-        case (diff>7): this.result[0].morethan7++;
-        break;
-        default: console.log("Wrong calculation");
+        }
+      },
+      (error: Response) => {
+        if((error instanceof AppError) || (error instanceof NotFoundError)){
+          console.log(error);
+        }else throw error;
       }
-    });
-    // console.log(JSON.stringify(this.result));
+    )
   }
 
   diffFromCurrent(date){
@@ -92,10 +110,10 @@ export class AppComponent {
   }
 
   RefreshResult(){
-    this.result[0].total=null;
-    this.result[0].last7=null;
-    this.result[0].morethan7=null;
-    this.result[0].last24=null;
+    this.result[0].total=0;
+    this.result[0].last7=0;
+    this.result[0].morethan7=0;
+    this.result[0].last24=0;
     console.log("refreshed");
   }
 
