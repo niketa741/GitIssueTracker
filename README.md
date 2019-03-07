@@ -1,4 +1,4 @@
-# Gitrepoapp
+# GitIssueTrackerApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.3.
 Gitrepoapp is a simple app which tracks opened issues from a given repository. It takes input as
@@ -11,7 +11,7 @@ hours, issues opened within last 7 days and issues older than a week.
 
 ## Installation
 
-    $ git clone https://github.com/anasanshu/issuetracker.git
+    $ git clone https://github.com/niketa741/GitIssueTracker.git
     $ cd issuetracker
     $ ng serve
 
@@ -32,4 +32,4 @@ code to github as well as deploy to heroku at the same time, then run - ``npm ru
 Also, you can deploy to heroku only when you had already created heroku app from the console. 
 To know more about deploying to heroku, refer [this page](https://devcenter.heroku.com/articles/getting-started-with-nodejs).
 
-You can also view the app live [here](https://gitopenissue.herokuapp.com/)
+You can also view the app live [here](https://gitissuetracker.herokuapp.com/)
