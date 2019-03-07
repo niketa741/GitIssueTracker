@@ -18,7 +18,7 @@ export class FetchGitIssuesService {
     .pipe(catchError(this.handleError));
   }
   fetchIssuesByDate(username,repo_name,date) {
-    this.url = `https://api.github.com/search/issues?q=repo:${username}/${repo_name}+type:issue+state:open++created:<${date}`;
+    this.url = `https://api.github.com/search/issues?q=repo:${username}/${repo_name}+type:issue+state:open++created:>${date}`;
     return this.http.get(this.url)
     .pipe(catchError(this.handleError));
   }

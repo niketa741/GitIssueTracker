@@ -3,7 +3,6 @@ import { FetchGitIssuesService } from './services/fetch-git-issues.service';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { CompileShallowModuleMetadata } from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -84,13 +83,12 @@ export class AppComponent {
       result => {
         let diff = this.diffFromCurrent(date);
         switch(true) {
-        case (diff <1) : this.result[0].last24 = result.total_count;
+        case (diff <=1) : this.result[0].last24 = result.total_count;
         console.log(this.result);
         break;
-        case (diff < 7) : this.result[0].last7 = result.total_count;
-        this.result[0].morethan7 = this.result[0].total - this.result[0].last7;
+        case (diff <= 7) : this.result[0].last7 = result.total_count;
+        // this.result[0].morethan7 = this.result[0].total - this.result[0].last7;
         console.log(this.result);
-
         }
       },
       (error: Response) => {
@@ -106,7 +104,7 @@ export class AppComponent {
     let current_date = Date.parse(new Date(Date.now()).toUTCString());
     let differenceInDates = current_date - prev_date;
     //converting the diff in milliseconds to days
-    return differenceInDates/(1000*60*60*24);
+    return Math.floor(differenceInDates/(1000*60*60*24));
   }
 
   RefreshResult(){
